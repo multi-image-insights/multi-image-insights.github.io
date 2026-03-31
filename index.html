@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIMIC | More Images, More Problems?</title>
+    <meta
+      name="description"
+      content="Project page for More Images, More Problems? A Controlled Analysis of VLM Failure Modes."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700&family=Castoro:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="container hero-inner">
+          <h1>More Images, More Problems?<br />A Controlled Analysis of VLM Failure Modes</h1>
+
+          <div class="authors">
+            <span><a href="https://anurag-198.github.io/" target="_blank" rel="noreferrer">Anurag Das</a><sup>1</sup></span>
+            <span><a href="https://www.adrianbulat.com/" target="_blank" rel="noreferrer">Adrian Bulat</a><sup>2,3</sup></span>
+            <span><a href="https://abaldrati.github.io/" target="_blank" rel="noreferrer">Alberto Baldrati</a><sup>2</sup></span>
+            <span><a href="https://maniadisg.github.io/" target="_blank" rel="noreferrer">Ioannis Maniadis Metaxas</a><sup>2</sup></span>
+            <span><a href="https://www.mpi-inf.mpg.de/departments/computer-vision-and-machine-learning/people/bernt-schiele/" target="_blank" rel="noreferrer">Bernt Schiele</a><sup>1</sup></span>
+            <span><a href="https://ytzimiro.github.io/" target="_blank" rel="noreferrer">Georgios Tzimiropoulos</a><sup>2,4</sup></span>
+            <span><a href="https://www.braismartinez.org/" target="_blank" rel="noreferrer">Brais Martinez</a><sup>2</sup></span>
+          </div>
+
+          <div class="affiliations">
+            <p><sup>1</sup> MPI for Informatics, Saarland Informatics Campus</p>
+            <p><sup>2</sup> Samsung AI, Cambridge</p>
+            <p><sup>3</sup> Technical University of Iasi, Romania</p>
+            <p><sup>4</sup> Queen Mary University of London, UK</p>
+          </div>
+
+          <p class="venue">arXiv 2026</p>
+
+          <div class="publication-links">
+            <a class="publication-button" href="https://arxiv.org/pdf/2601.07812" target="_blank" rel="noreferrer">Paper</a>
+            <a class="publication-button" href="https://arxiv.org/abs/2601.07812" target="_blank" rel="noreferrer">arXiv</a>
+            <a class="publication-button" href="https://github.com/anurag-198/MIMIC" target="_blank" rel="noreferrer">Code</a>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="section">
+        <div class="container narrow">
+          <h2>Abstract</h2>
+          <p>
+            Large Vision Language Models (LVLMs) have demonstrated remarkable capabilities, yet their proficiency in understanding and reasoning over multiple images remains largely unexplored. While existing benchmarks have initiated the evaluation of multi-image models, a comprehensive analysis of their core weaknesses and their causes is still lacking. In this work, we introduce MIMIC (Multi-Image Model Insights and Challenges), a new benchmark designed to rigorously evaluate the multi-image capabilities of LVLMs. Using MIMIC, we conduct a series of diagnostic experiments that reveal pervasive issues: LVLMs often fail to aggregate information across images and struggle to track or attend to multiple concepts simultaneously. To address these failures, we propose two novel complementary remedies. On the data side, we present a procedural data-generation strategy that composes single-image annotations into rich, targeted multi-image training examples. On the optimization side, we analyze layer-wise attention patterns and derive an attention-masking scheme tailored for multi-image inputs. Experiments substantially improve cross-image aggregation while also enhancing performance on existing multi-image benchmarks.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow">
+          <h2>Insights</h2>
+          <p>
+            MIMIC is a controlled benchmark designed to study how LVLMs behave when reasoning must happen across multiple images rather than within a single view. Starting from annotated single-image datasets, it procedurally constructs multi-image examples by composing image sets and language queries so that the required evidence can be distributed across images in a controlled and interpretable way.
+          </p>
+          <p>
+            The benchmark includes four task families, Common, Counting, Odd-One, and Listing, which probe different aspects of multi-image understanding. Across these tasks, MIMIC varies sequence length, information spread, distractor presence, object-instance distribution, and query complexity while keeping the answers unambiguous. This makes it possible to isolate where performance breaks and why, and the findings below summarize the main limitations revealed by the analysis.
+            Using the benchmark, the paper identifies six key findings about current LVLMs’ multi-image failure modes, which are summarized below.
+          </p>
+
+          <div class="insight-list">
+            <div class="insight-item">
+              <h3>Finding 1: The performance degradation in multi-image scenarios stems primarily from increased sequence length rather than the increased number of images.</h3>
+ 
+            </div>
+            <div class="insight-item">
+              <h3>Finding 2: Current LVLMs primarily behave as single-image models: performance peaks when the vision-token sequence length matches that produced by one or two images.</h3>
+             
+            </div>
+            <div class="insight-item">
+              <h3>Finding 3: Current LVLMs struggle to aggregate information across multiple images.</h3>
+             
+            </div>
+
+            <div class="insight-figure">
+              <div class="media-placeholder large">
+                <img src="assets/images/figure1.png" alt="Figure 1">
+              </div>
+              <p class="caption">
+                Figure 1. Counting performance under different settings. Performance consistently drops when object instances are spread across multiple images, and drops even more sharply when the task requires tracking multiple concepts.
+              </p>
+            </div>
+
+            <div class="insight-item">
+              <h3>Finding 4: Models are sensitive to visual distractors, especially if information is spread out.</h3>
+            </div>
+
+            <div class="insight-item">
+              <h3>Finding 5: LVLMs demonstrate limited capacity for multi-concept tracking, reducing their reliability on complex multi-object queries.</h3>
+            </div>
+
+
+            <div class="insight-item">
+              <h3>Finding 6: Inter-image attention diminishes in deeper layers of LVLMs, indicating a shift from cross-image integration to intra-image focus.</h3>
+            </div>
+
+            <div class="insight-figure">
+              <div class="media-placeholder medium">
+                <img src="assets/images/figure4.png" alt="Figure 4">
+              </div>
+              <p class="caption">
+                Figure 2. Inter-image and intra-image attention across layers. Early layers show stronger cross-image interaction, while deeper layers become predominantly intra-image.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- <section class="section">
+        <div class="container">
+          <div class="media-placeholder medium figure3-block">
+            <img src="assets/images/figure3.png" alt="Figure 3">
+          </div>
+          <p class="caption">
+            Figure 3. Effect of vision token sequence length on model performance. The paper compares token pooling and pixel-space pooling to disentangle sequence-length effects from information reduction.
+          </p>
+        </div>
+      </section> -->
+
+      
+      <section class="section">
+        <div class="container narrow">
+          <h2>Method</h2>
+          <p>
+            The paper proposes two complementary remedies for improving multi-image reasoning. The first is a data-centric strategy that procedurally composes single-image annotations into multi-image training examples, explicitly teaching the model to aggregate evidence across images.
+            The second is an optimization-centric attention-masking scheme derived from the layer-wise attention analysis. Together, these components improve both the supervision signal and the model’s ability to communicate across images.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow results-grid">
+          <div>
+            <div class="media-placeholder medium figure7-block">
+              <img src="assets/images/figure7.png" alt="Figure 7">
+            </div>
+            <p class="caption">
+              Figure 3. Masking Strategy for Our Approach.
+            </p>
+          </div>
+          <div>
+            <div class="media-placeholder medium">
+              <img src="assets/images/table3.png" alt="Table 3">
+            </div>
+            <p class="caption">
+              Table 1. Results on existing multi-image benchmarks including MuirBench, Blink, MMIU, MIRB, MMT, and NLVR2.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow">
+          <h2>Results</h2>
+          <p>
+            The proposed method improves performance both on standard multi-image benchmarks and on MIMIC. These gains show that targeted supervision and better cross-image attention help models move beyond their strong single-image bias and generalize across unseen scenarios.
+          </p>
+          <!-- <p>
+            On existing multi-image benchmarks, the method delivers stronger results across datasets such as MuirBench, Blink, MMIU, MIRB, MMT, and NLVR2. On MIMIC, the improvements are especially visible on challenging categories such as Counting, Odd-One, and Listing, where the model must combine distributed evidence and track multiple concepts more reliably.
+          </p> -->
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow results-grid">
+          <div>
+            <div class="media-placeholder medium table4-block">
+              <img src="assets/images/table4.png" alt="Table 4">
+            </div>
+            <p class="caption">
+              Table 2. Results on the MIMIC benchmark, with strong gains on Common, Counting, Odd-One, and Listing.
+            </p>
+          </div>
+          <div>
+            <div class="media-placeholder medium figure5-block">
+              <img src="assets/images/figure5.png" alt="Figure 5">
+            </div>
+            <p class="caption">
+              Figure 4. Answer-to-image attention comparison. The baseline misses relevant evidence in one image, while the improved model attends more evenly to the correct object evidence.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow">
+          <h2>Takeaway</h2>
+          <p>
+            MIMIC shows that current LVLMs remain weak multi-image reasoners: they struggle with long sequences, cross-image aggregation, distractors, and multi-concept tracking, while deeper layers drift toward intra-image focus.
+            Targeted multi-image supervision and attention masking directly improve these weaknesses, leading to stronger results on both existing benchmarks and MIMIC.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container narrow">
+          <h2>BibTeX</h2>
+          <div class="bibtex-block">
+            <pre><code id="bibtex">@article{das2026more,
+  title   = {More Images, More Problems? A Controlled Analysis of VLM Failure Modes},
+  author  = {Das, Anurag and Bulat, Adrian and Baldrati, Alberto and Metaxas, Ioannis Maniadis and Schiele, Bernt and Tzimiropoulos, Georgios and Martinez, Brais},
+  journal = {arXiv preprint arXiv:2601.07812},
+  year    = {2026}
+}</code></pre>
+            <button class="copy-button" id="copy-bibtex" type="button">Copy BibTeX</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container narrow">
+        <p>
+          This website is licensed under a
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">Creative Commons Attribution-Share Alike 4.0 International License</a>.
+        </p>
+        <p>
+          This page was built using the
+          <a href="https://github.com/nerfies/nerfies.github.io" target="_blank" rel="noreferrer">Nerfies website template</a>.
+        </p>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
